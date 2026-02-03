@@ -294,5 +294,5 @@ app.use((err, req, res, next) => {
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`✅ Backend running at ${PORT}`);
+  console.log(`✅ Backend running at https://localhost ${PORT}`);
 });
