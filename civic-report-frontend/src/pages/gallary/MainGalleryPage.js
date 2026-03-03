@@ -10,7 +10,7 @@ import {
 } from "react-bootstrap";
 import axios from "axios";
 
-const BASE_URL = "http://localhost:5000/uploads/gallary/";
+const BASE_URL = "http://13.201.16.142:5000/uploads/gallary/";
 
 export default function MainGalleryPage() {
   const [galleries, setGalleries] = useState([]);
