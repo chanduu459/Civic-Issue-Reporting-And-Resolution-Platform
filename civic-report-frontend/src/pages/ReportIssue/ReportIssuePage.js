@@ -92,7 +92,7 @@ function ReportIssuePage() {
     try {
       const normalized = normalizeIndianPhone(phone);
 
-      const res = await fetch("http://localhost:5000/api/auth/send-otp", {
+      const res = await fetch("http://13.201.16.142:5000/api/auth/send-otp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ phone: normalized }),
@@ -143,7 +143,7 @@ function ReportIssuePage() {
     try {
       const normalized = normalizeIndianPhone(phone);
 
-      const res = await fetch("http://localhost:5000/api/auth/verify-otp", {
+      const res = await fetch("http://13.201.16.142:5000/api/auth/verify-otp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ phone: normalized, otp }),
@@ -209,7 +209,7 @@ function ReportIssuePage() {
     photoFiles.forEach((file) => formData.append("photos", file));
 
     try {
-      const res = await fetch("http://localhost:5000/api/issues/report", {
+      const res = await fetch("http://13.201.16.142:5000/api/issues/report", {
         method: "POST",
         body: formData,
       });
@@ -332,6 +332,21 @@ function ReportIssuePage() {
           color: #16a34a;
           font-weight: 600;
         }
+          /* Global gradient heading for all steps */
+.gradient-heading {
+  background: linear-gradient(
+    135deg,
+    #0bbf7a,
+    #0a9f6e,
+    #067a58,
+    #065f46
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 800;
+  text-align: center;
+}
+
 
         .report-inner {
           margin-top: 10px;
@@ -360,9 +375,11 @@ function ReportIssuePage() {
       <main className="report-wrapper">
         <Container className="report-container">
           <div className="report-card">
-            <h2 className="text-center report-title">
-              Report a Community Issue
-            </h2>
+        <h2 className="gradient-heading text-center">
+  Report a Community Issue
+</h2>
+
+
             <p className="text-center report-subtitle">
               keep your city clean and safe by reporting problems directly to the
               authorities in just three steps.

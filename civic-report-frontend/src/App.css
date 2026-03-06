@@ -935,6 +935,7 @@ body {
   .hero-content-wrapper {
     grid-template-columns: 1fr;
     gap: 2rem;
+     min-height: 100%;
   }
 
   .hero-image-container {
@@ -1001,9 +1002,10 @@ body {
     padding: 0 1rem;
   }
 
-  .hero-wrapper {
-    min-height: auto;
-  }
+ .hero-wrapper {
+  min-height: 100vh;
+}
+
 
   .feature-card,
   .stat-card {
@@ -1014,7 +1016,8 @@ body {
 /* ================= DASHBOARD LAYOUT ================= */
 .dashboard-layout {
   height: 100vh;
-  overflow: hidden;
+  overflow: visible;
+
 }
 
 .dashboard-layout .sidebar-fixed {

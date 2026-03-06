@@ -31,7 +31,7 @@ function AdminForgotPassword() {
 
     // TODO: replace this with real backend call to /api/login/forgot-password
     // e.g.:
-    // const res = await fetch("http://localhost:5000/api/login/forgot-password", { ... })
+    // const res = await fetch("http://13.201.16.142:5000/api/login/forgot-password", { ... })
 
     setTimeout(() => {
       setMessage(`Password reset link sent to ${email}`);
