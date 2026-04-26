@@ -1,0 +1,99 @@
+const express = require("express");
+const pool = require("../../../config/database");
+const { authMiddleware } = require("../../../middleware/authMiddleware");
+
+const router = express.Router();
+
+// ✅ PATCH -> Block / Unblock admin
+// URL: /api/admin/middle-admins/block/:id
+router.patch("/block/:id", async (req, res) => {
+  const { id } = req.params;
+  const { block } = req.body; // true=block, false=unblock
+
+  try {
+    const connection = await pool.getConnection();
+
+    // ✅ Update block status in DB
+    const [result] = await connection.execute(
+      "UPDATE admins SET is_blocked = ? WHERE id = ?",
+      [block ? 1 : 0, id]
+    );
+
+    if (result.affectedRows === 0) {
+      connection.release();
+      return res
+        .status(404)
+        .json({ success: false, message: "Admin not found" });
+    }
+
+    // ✅ Fetch updated admin (send to frontend)
+    const [updatedRows] = await connection.execute(
+      "SELECT id, username, email, is_blocked, created_at FROM admins WHERE id = ?",
+      [id]
+    );
+
+    connection.release();
+
+    return res.json({
+      success: true,
+      message: block ? "Admin blocked ✅" : "Admin unblocked ✅",
+      admin: updatedRows[0],
+    });
+  } catch (err) {
+    console.error("Block/unblock error:", err);
+    return res.status(500).json({ success: false, message: "Database error" });
+  }
+});
+
+// ✅ DELETE -> Delete admin
+// URL: /api/admin/middle-admins/:id
+router.delete("/:id", authMiddleware, async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const connection = await pool.getConnection();
+
+    // ✅ SELECT before delete to capture deleted record info
+    const [rows] = await connection.execute(
+      "SELECT id, email, username FROM admins WHERE id = ? LIMIT 1",
+      [id]
+    );
+
+    if (rows.length === 0) {
+      connection.release();
+      return res
+        .status(404)
+        .json({ success: false, message: "Admin not found" });
+    }
+
+    const deletedRow = rows[0];
+
+    const [result] = await connection.execute(
+      "DELETE FROM admins WHERE id = ?",
+      [id]
+    );
+
+    connection.release();
+
+    if (result.affectedRows === 0) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Admin not found" });
+    }
+
+    // ✅ Log deletion to audit_logs (await to ensure it completes)
+    try {
+      const { logDeletion } = require("../../../utils/audit");
+      await logDeletion(req, deletedRow, "admins", "admins");
+    } catch (e) {
+      console.error("❌ Audit log error:", e.message);
+    }
+
+    return res.json({ success: true, message: "Admin deleted ✅" });
+  } catch (err) {
+    console.error("❌ Delete error:", err);
+    return res.status(500).json({ success: false, message: "Database error" });
+  }
+});
+
+module.exports = router;
